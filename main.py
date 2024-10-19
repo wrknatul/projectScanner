@@ -4,6 +4,31 @@ import numpy as np
 import time 
 
 BRESENHAM=1
+NUM_SCANNERS=41
+DISTANCE_BETWEEN_SCANNERS=6
+
+def find_parallel_points(x1, y1, x2, y2, distance):
+
+    # Находим угловой коэффициент k
+    k = (y2 - y1) / (x2 - x1) if x2 != x1 else float('inf')
+
+    # Нормальный вектор
+    if k != float('inf'):
+        norm_vector = (-k, 1)
+    else:
+        norm_vector = (1, 0)
+
+    # Длина нормализованного вектора
+    length = math.sqrt(norm_vector[0]**2 + norm_vector[1]**2)
+
+    # Нормализуем вектор
+    unit_vector = (norm_vector[0] / length, norm_vector[1] / length)
+
+    # Находим новые точки
+    A_prime = (x1 - distance * unit_vector[0], y1 - distance * unit_vector[1])
+    B_prime = (x2 - distance * unit_vector[0], y2 - distance * unit_vector[1])
+
+    return A_prime, B_prime
 
 def equation_of_line(x1, y1, angle_of_slope):
     """
@@ -122,20 +147,6 @@ def compute_line_length_in_rectangle(line_points, x, y, width, height):
   else:
     # No intersection points found, so the line is not inside the rectangle
     return 0
-  
-  if len(intersection_points) == 2:
-    x1_in, y1_in = intersection_points[-1]
-    x2_in, y2_in = intersection_points[-2]
-    line_length = math.sqrt((x2_in - x1_in) ** 2 + (y2_in - y1_in) ** 2)
-    return line_length
-  # Check for intersections with top and bottom edges
-  if A != 0:  # Avoid division by zero
-    for edge_y in [y, y + height]:
-      # Calculate x-coordinate of intersection point
-        x_intersection = -(C + B*edge_y)/A
-        # Check if intersection point is within rectangle bounds
-        if x <= x_intersection <= x + width:
-          intersection_points.append((x_intersection, edge_y))
 
 def can_go(line_points, x, y, width, height):
   return compute_line_length_in_rectangle(line_points, x, y, 1, 1) > 0. and x >= 0 and x < width and y >= 0 and y < height
@@ -227,29 +238,37 @@ def main():
     b = []
     for angle_of_slope in range(360):
         angle_of_slope *= 1
-        new_col = []
-        number = 0.
-        x1, y1 = width/2, height/2
-        x2 = x1 + 1
-        y2 = y1 + math.tan(math.radians(angle_of_slope))
-        if BRESENHAM==0:
-          for i in range(width):
-            for j in range(height):
-              koef = compute_line_length_in_rectangle([(x1, y1), (x2, y2)], i, j, 1, 1)
-              new_col.append(koef)
-              number += koef*bw_image[i][j]
-          A.append(new_col)
-          b.append(number)
-        else:
-          sp_points = bresenham_line_float_subsquares(x1, y1, x2, y2, width, height)
-          new_col = [0]*width*height
-          for point in sp_points:
-            x, y = point
-            if 0 <= x and x < width and 0 <= y and y < height:
-              new_col[x*height + y] = 1
-              number += bw_image[x][y]
-          A.append(new_col)
-          b.append(number)
+        for scanner in range(NUM_SCANNERS):
+            if scanner % 2 == 0:
+                distance = (scanner + 1)//2
+            else:
+                distance = -(scanner + 1)//2
+            distance *= DISTANCE_BETWEEN_SCANNERS
+
+            new_col = []
+            number = 0.
+            x1, y1 = width/2, height/2
+            x2 = x1 + 1
+            y2 = y1 + math.tan(math.radians(angle_of_slope))
+            (x1, y1), (x2, y2) = find_parallel_points(x1, y1, x2, y2, distance)
+            if BRESENHAM==0:
+              for i in range(width):
+                for j in range(height):
+                  koef = compute_line_length_in_rectangle([(x1, y1), (x2, y2)], i, j, 1, 1)
+                  new_col.append(koef)
+                  number += koef*bw_image[i][j]
+              A.append(new_col)
+              b.append(number)
+            else:
+              sp_points = bresenham_line_float_subsquares(x1, y1, x2, y2, width, height)
+              new_col = [0]*width*height
+              for point in sp_points:
+                x, y = point
+                if 0 <= x and x < width and 0 <= y and y < height:
+                  new_col[x*height + y] = 1
+                  number += bw_image[x][y]
+              A.append(new_col)
+              b.append(number)
     X = np.linalg.pinv(A) @ b
     outputImage = np.zeros((width, height))
     for i in range(width):
