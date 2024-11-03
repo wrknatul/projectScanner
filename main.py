@@ -230,7 +230,7 @@ def bresenham_line_float_subsquares(x1, y1, x2, y2, width, height):
 
 
 def main():
-    image_path = "kaggle/working/projectScanner/data/goal_photo.jpg"
+    image_path = "data/goal_photo.jpg"
     bw_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2GRAY)
     # cv2.imwrite("data/converted_photo.jpg", bw_image)
     width, height = bw_image.shape[0], bw_image.shape[1]
@@ -274,7 +274,7 @@ def main():
     for i in range(width):
         for j in range(height):
             outputImage[i][j] = X[i*height + j]
-    cv2.imwrite("/kaggle/working/projectScanner/data/result_image.jpg", outputImage) 
+    cv2.imwrite("data/result_image.jpg", outputImage) 
 
 if __name__ == "__main__":
     main()
