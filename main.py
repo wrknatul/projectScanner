@@ -227,6 +227,10 @@ def bresenham_line_float_subsquares(x1, y1, x2, y2, width, height):
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Image processing with scanners')
+    parser.add_argument('--input_image', type=str, default='data/goal_photo.jpg',
+                      help='Path to input image')
+    parser.add_argument('--output_image', type=str, default='data/result_image.jpg',
+                      help='Path to save result image')
     parser.add_argument('--bresenham', type=int, default=1,
                       help='Use Bresenham algorithm (1) or not (0)')
     parser.add_argument('--num_scanners', type=int, default=41,
@@ -237,8 +241,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    image_path = "data/goal_photo.jpg"
-    bw_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2GRAY)
+    bw_image = cv2.cvtColor(cv2.imread(args.input_image), cv2.COLOR_BGR2GRAY)
     width, height = bw_image.shape[0], bw_image.shape[1]
     A = []
     b = []
@@ -280,7 +283,7 @@ def main():
     for i in range(width):
         for j in range(height):
             outputImage[i][j] = X[i*height + j]
-    cv2.imwrite("data/result_image.jpg", outputImage) 
+    cv2.imwrite(args.output_image, outputImage) 
 
 if __name__ == "__main__":
     main()
