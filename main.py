@@ -2,10 +2,7 @@ import math
 import cv2
 import numpy as np
 import time 
-
-BRESENHAM=1
-NUM_SCANNERS=41
-DISTANCE_BETWEEN_SCANNERS=6
+import argparse
 
 def find_parallel_points(x1, y1, x2, y2, distance):
 
@@ -228,22 +225,31 @@ def bresenham_line_float_subsquares(x1, y1, x2, y2, width, height):
 
     return intersected_squares
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Image processing with scanners')
+    parser.add_argument('--bresenham', type=int, default=1,
+                      help='Use Bresenham algorithm (1) or not (0)')
+    parser.add_argument('--num_scanners', type=int, default=41,
+                      help='Number of scanners')
+    parser.add_argument('--distance_between_scanners', type=int, default=6,
+                      help='Distance between scanners')
+    return parser.parse_args()
 
 def main():
+    args = parse_args()
     image_path = "data/goal_photo.jpg"
     bw_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2GRAY)
-    # cv2.imwrite("data/converted_photo.jpg", bw_image)
     width, height = bw_image.shape[0], bw_image.shape[1]
     A = []
     b = []
     for angle_of_slope in range(360):
         angle_of_slope *= 1
-        for scanner in range(NUM_SCANNERS):
+        for scanner in range(args.num_scanners):
             if scanner % 2 == 0:
                 distance = (scanner + 1)//2
             else:
                 distance = -(scanner + 1)//2
-            distance *= DISTANCE_BETWEEN_SCANNERS
+            distance *= args.distance_between_scanners
 
             new_col = []
             number = 0.
@@ -251,7 +257,7 @@ def main():
             x2 = x1 + 1
             y2 = y1 + math.tan(math.radians(angle_of_slope))
             (x1, y1), (x2, y2) = find_parallel_points(x1, y1, x2, y2, distance)
-            if BRESENHAM==0:
+            if args.bresenham == 0:
               for i in range(width):
                 for j in range(height):
                   koef = compute_line_length_in_rectangle([(x1, y1), (x2, y2)], i, j, 1, 1)
