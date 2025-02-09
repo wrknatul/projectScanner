@@ -241,9 +241,9 @@ def kaczmarz_solve(A, b, type_, max_iter=10000):
     n, m = A.shape
     x = np.zeros(m)
     if type_ == "cicle":
-        j = cicle()
+        j = cicle
     else:
-        j = symART()
+        j = symART
 
     for _ in range(max_iter):
         i = j(_, n)
