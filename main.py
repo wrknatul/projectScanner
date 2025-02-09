@@ -237,6 +237,7 @@ def symART(i, n):
         return 2*n - 1 - i
 
 def kaczmarz_solve(A, b, type_, max_iter=10000):
+    A = np.array(A)
     n, m = A.shape
     x = np.zeros(m)
     if type_ == "cicle":
