@@ -232,9 +232,9 @@ def symART(i, n):
     i = i % (2*n - 1)
 
     if i <= n - 1:
-        return i + 1
+        return i
     else:
-        return 2*n - 1 - i
+        return 2*n - 2 - i
 
 def kaczmarz_solve(A, b, type_, max_iter=10000):
     A = np.array(A)
