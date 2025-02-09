@@ -225,6 +225,33 @@ def bresenham_line_float_subsquares(x1, y1, x2, y2, width, height):
 
     return intersected_squares
 
+def cicle(it, size):
+    return it % size + 1
+
+def symART(i, n):
+    i = i % (2*n - 1)
+
+    if i <= n - 1:
+        return i + 1
+    else:
+        return 2*n - 1 - i
+
+def kaczmarz_solve(A, b, type_, max_iter=10000):
+    n, m = A.shape
+    x = np.zeros(m)
+    if type_ == "cicle":
+        j = cicle()
+    else:
+        j = symART()
+
+    for _ in range(max_iter):
+        i = j(_, n)
+        ai = A[i, :]
+        bi = b[i]
+        x = x + (bi - np.dot(ai, x)) / np.dot(ai, ai) * ai
+
+    return x
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Image processing with scanners')
     parser.add_argument('--input_image', type=str, default='data/goal_photo.jpg',
@@ -233,6 +260,10 @@ def parse_args():
                       help='Path to save result image')
     parser.add_argument('--bresenham', type=int, default=1,
                       help='Use Bresenham algorithm (1) or not (0)')
+    parser.add_argument('--kaczmarz', type=int, default=0,
+                      help='Use Kaczmarz algorithm (1) or not (0)')
+    parser.add_argument('--function_type', type=str, default="cicle",
+                      help='Use different type of function for Kaczmarz algorithm: "cicle" or "symART"')
     parser.add_argument('--num_scanners', type=int, default=41,
                       help='Number of scanners')
     parser.add_argument('--distance_between_scanners', type=int, default=6,
@@ -278,7 +309,12 @@ def main():
                   number += bw_image[x][y]
               A.append(new_col)
               b.append(number)
-    X = np.linalg.pinv(A) @ b
+
+    if args.kaczmarz == 1:
+        X = kaczmarz_solve(A, b, args.function_type)
+    else:
+        X = np.linalg.pinv(A) @ b
+
     outputImage = np.zeros((width, height))
     for i in range(width):
         for j in range(height):
