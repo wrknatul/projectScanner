@@ -226,7 +226,7 @@ def bresenham_line_float_subsquares(x1, y1, x2, y2, width, height):
     return intersected_squares
 
 def cicle(it, size):
-    return it % size + 1
+    return it % size
 
 def symART(i, n):
     i = i % (2*n - 1)
