@@ -237,7 +237,7 @@ def symART(i, n, A, v):
         return 2*n - 2 - i
 
 def proportional_solve(it, n, A, v):
-    products = np.dot(A, v)
+    products = np.abs(np.dot(A, v))
     probabilities = products / np.sum(products)
     return np.random.choice(len(A), p=probabilities)
 
@@ -271,7 +271,7 @@ def parse_args():
     parser.add_argument('--kaczmarz', type=int, default=0,
                       help='Use Kaczmarz algorithm (1) or not (0)')
     parser.add_argument('--function_type', type=str, default="cicle",
-                      help='Use different type of function for Kaczmarz algorithm: "cicle" or "symART" or "probabilities algorithm"')
+                      help='Use different type of function for Kaczmarz algorithm: "cicle" or "symART" or "probabilities_algorithm"')
     parser.add_argument('--num_scanners', type=int, default=41,
                       help='Number of scanners')
     parser.add_argument('--distance_between_scanners', type=int, default=6,
