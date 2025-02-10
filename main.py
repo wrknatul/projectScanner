@@ -225,10 +225,10 @@ def bresenham_line_float_subsquares(x1, y1, x2, y2, width, height):
 
     return intersected_squares
 
-def cicle(it, size):
+def cicle(it, size, A, v):
     return it % size
 
-def symART(i, n):
+def symART(i, n, A, v):
     i = i % (2*n - 1)
 
     if i <= n - 1:
@@ -236,17 +236,24 @@ def symART(i, n):
     else:
         return 2*n - 2 - i
 
+def proportional_solve(it, n, A, v):
+    products = np.dot(A, v)
+    probabilities = products / np.sum(products)
+    return np.random.choice(len(A), p=probabilities)
+
 def kaczmarz_solve(A, b, type_, max_iter=10000):
     A = np.array(A)
     n, m = A.shape
     x = np.zeros(m)
     if type_ == "cicle":
         j = cicle
-    else:
+    elif type_ == "symART":
         j = symART
+    else:
+       j = proportional_solve
 
     for _ in range(max_iter):
-        i = j(_, n)
+        i = j(_, n, A, x)
         ai = A[i, :]
         bi = b[i]
         x = x + (bi - np.dot(ai, x)) / np.dot(ai, ai) * ai
@@ -264,7 +271,7 @@ def parse_args():
     parser.add_argument('--kaczmarz', type=int, default=0,
                       help='Use Kaczmarz algorithm (1) or not (0)')
     parser.add_argument('--function_type', type=str, default="cicle",
-                      help='Use different type of function for Kaczmarz algorithm: "cicle" or "symART"')
+                      help='Use different type of function for Kaczmarz algorithm: "cicle" or "symART" or "probabilities algorithm"')
     parser.add_argument('--num_scanners', type=int, default=41,
                       help='Number of scanners')
     parser.add_argument('--distance_between_scanners', type=int, default=6,
