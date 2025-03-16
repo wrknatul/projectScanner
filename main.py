@@ -239,6 +239,8 @@ def symART(i, n, A, v):
 def proportional_solve(it, n, A, v):
     products = np.abs(np.dot(A, v))
     probabilities = products / np.sum(products)
+    assert not np.isnan(A).any(), "Матрица содержит элементы типа NaN"
+    assert not np.isnan(probabilities).any(), "probabilities содержит элементы типа NaN"
     return np.random.choice(len(A), p=probabilities)
 
 def kaczmarz_solve(A, b, type_, max_iter=10000):
