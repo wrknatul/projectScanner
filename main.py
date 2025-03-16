@@ -237,6 +237,8 @@ def symART(i, n, A, v):
         return 2*n - 2 - i
 
 def proportional_solve(it, n, A, v):
+    A = A / np.linalg.norm(A, ord='fro')
+    v = v / np.linalg.norm(v)
     products = np.abs(np.dot(A, v))
     probabilities = products / np.sum(products)
     assert not np.isnan(A).any(), "Матрица содержит элементы типа NaN"
