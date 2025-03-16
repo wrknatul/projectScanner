@@ -241,7 +241,7 @@ def proportional_solve(it, n, A, v):
     probabilities = products / np.sum(products)
     assert not np.isnan(A).any(), "Матрица содержит элементы типа NaN"
     assert not np.isnan(v).any(), "v содержит элементы типа NaN"
-    assert not np.isnan(probabilities).any(), A.shape + " " + v.shape +  " probabilities содержит элементы типа NaN"
+    assert not np.isnan(probabilities).any(), str(A.shape) + " " + str(v.shape) +  " probabilities содержит элементы типа NaN"
     return np.random.choice(len(A), p=probabilities)
 
 def kaczmarz_solve(A, b, type_, max_iter=10000):
