@@ -237,15 +237,11 @@ def symART(i, n, A, v):
         return 2*n - 2 - i
 
 def proportional_solve(it, n, A, v):
-    v_norm = np.linalg.norm(v)
-    A = A / np.linalg.norm(A, ord='fro')
-    v = v / np.linalg.norm(v)
+    if np.linalg.norm(v) < 0.0001:
+       return np.random.choice(len(A))
+
     products = np.abs(np.dot(A, v))
     probabilities = products / np.sum(products)
-    assert not np.isnan(A).any(), "Матрица содержит элементы типа NaN"
-    assert not np.isnan(v).any(), str(v_norm) + "v содержит элементы типа NaN"
-    assert not np.isnan(np.dot(A, v)).any(), "np.dot(A, v) содержит элементы типа NaN"
-    assert not np.isnan(probabilities).any(), str(A.shape) + " " + str(v.shape) +  " probabilities содержит элементы типа NaN"
     return np.random.choice(len(A), p=probabilities)
 
 def kaczmarz_solve(A, b, type_, max_iter=10000):
