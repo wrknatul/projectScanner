@@ -240,6 +240,7 @@ def proportional_solve(it, n, A, v):
     products = np.abs(np.dot(A, v))
     probabilities = products / np.sum(products)
     assert not np.isnan(A).any(), "Матрица содержит элементы типа NaN"
+    assert not np.isnan(v).any(), "v содержит элементы типа NaN"
     assert not np.isnan(probabilities).any(), "probabilities содержит элементы типа NaN"
     return np.random.choice(len(A), p=probabilities)
 
