@@ -236,6 +236,13 @@ def symART(i, n, A, v):
     else:
         return 2*n - 2 - i
 
+def evenART(it, size, A, v):
+    h = (size + 1) // 2
+    if it % 2 == 0:
+        return (it // 2) + 1
+    else:
+        return h + (it // 2)
+
 def proportional_solve(it, n, A, v):
     if np.linalg.norm(v) < 0.0001:
        return np.random.choice(len(A))
@@ -252,6 +259,8 @@ def kaczmarz_solve(A, b, type_, max_iter=10000):
         j = cicle
     elif type_ == "symART":
         j = symART
+    elif type_ == "evenART":
+        j = evenART
     else:
        j = proportional_solve
 
@@ -274,7 +283,7 @@ def parse_args():
     parser.add_argument('--kaczmarz', type=int, default=0,
                       help='Use Kaczmarz algorithm (1) or not (0)')
     parser.add_argument('--function_type', type=str, default="cicle",
-                      help='Use different type of function for Kaczmarz algorithm: "cicle" or "symART" or "probabilities_algorithm"')
+                      help='Use different type of function for Kaczmarz algorithm: "cicle" or "symART" or "evenART" or "probabilities_algorithm"')
     parser.add_argument('--num_scanners', type=int, default=41,
                       help='Number of scanners')
     parser.add_argument('--distance_between_scanners', type=int, default=6,
