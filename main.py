@@ -251,7 +251,7 @@ def proportional_solve(it, n, A, v):
       cached_probabilities = [np.linalg.norm(row) for row in A]
       cached_probabilities = cached_probabilities / np.sum(cached_probabilities)
 
-    return np.random.choice(len(A), p=probabilities)
+    return np.random.choice(len(A), p=cached_probabilities)
 
 def kaczmarz_solve(A, b, type_, max_iter=10000):
     A = np.array(A)
