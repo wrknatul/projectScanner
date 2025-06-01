@@ -4,6 +4,8 @@ import numpy as np
 import time 
 import argparse
 
+cached_probabilities = None
+
 def find_parallel_points(x1, y1, x2, y2, distance):
 
     # Находим угловой коэффициент k
@@ -244,11 +246,11 @@ def evenART(it, size, A, v):
         return h + (it // 2)
 
 def proportional_solve(it, n, A, v):
-    if np.linalg.norm(v) < 0.0001:
-       return np.random.choice(len(A))
+    global cached_probabilities
+    if cached_probabilities is None:  
+      cached_probabilities = [np.linalg.norm(row) for row in A]
+      cached_probabilities = cached_probabilities / np.sum(cached_probabilities)
 
-    products = np.abs(np.dot(A, v))
-    probabilities = products / np.sum(products)
     return np.random.choice(len(A), p=probabilities)
 
 def kaczmarz_solve(A, b, type_, max_iter=10000):
