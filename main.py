@@ -239,6 +239,7 @@ def symART(i, n, A, v):
         return 2*n - 2 - i
 
 def evenART(it, size, A, v):
+    it %= len(A)
     h = (size + 1) // 2
     if it % 2 == 0:
         return (it // 2) + 1
@@ -298,7 +299,7 @@ def main():
     width, height = bw_image.shape[0], bw_image.shape[1]
     A = []
     b = []
-    for angle_of_slope in range(360):
+    for angle_of_slope in range(180):
         angle_of_slope *= 1
         for scanner in range(args.num_scanners):
             if scanner % 2 == 0:
