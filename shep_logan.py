@@ -5,7 +5,7 @@ from skimage.transform import resize
 
 image_size = 256
 
-phantom = shepp_logan_phantom()
+phantom = 255*shepp_logan_phantom()
 photo = resize(phantom, (image_size, image_size), anti_aliasing=True)
 
 if len(sys.argv) != 2:
