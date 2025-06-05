@@ -3,7 +3,7 @@ import sys
 from skimage.data import shepp_logan_phantom
 from skimage.transform import resize
 
-image_size = 256
+image_size = 150
 
 phantom = 255*shepp_logan_phantom()
 photo = resize(phantom, (image_size, image_size), anti_aliasing=True)
